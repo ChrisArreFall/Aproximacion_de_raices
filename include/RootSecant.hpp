@@ -32,15 +32,16 @@ namespace anpi {
     template<typename T>
     T rootSecant(const std::function<T(T)> &funct, T xi, T xii, const T eps) {
 
-        int maxi = 10000;
-        T dx;
-        T tmp;
-        for (int i = 0; i < maxi; ++i) {
-            tmp = xii;
-            xii = xii - funct(xii) * (xi - xii) / (funct(xi) - funct(xii));
-            xi = tmp;
-            dx = std::abs(xii-xi);
-            if (dx < eps){
+        auto maxi = 10000; // max number of iterations
+        T dx; //delta of the change in X
+        T tmp; // temp value to store the current xii
+        for (int i = 0; i < maxi; ++i) { //loop until the max iterations
+            tmp = xii; //store the current xi
+            xii = xii - funct(xii) * (xi - xii) / (funct(xi) - funct(xii)); //calculate next x
+            xi = tmp; //set the x i-1 as the last xii
+            dx = std::abs(xii-xi); //calculate delta
+            if (dx < eps){ //if the delta is less than the epsilon
+                // we check that the X we get is actually a root
                 return std::abs(funct(xii))<=eps? xii : std::numeric_limits<T>::quiet_NaN();
             }
         }
