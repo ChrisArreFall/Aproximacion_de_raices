@@ -35,10 +35,34 @@ namespace anpi {
   template<typename T>
   T rootBisection(const std::function<T(T)>& funct,T xl,T xu,const T eps) {
 
-    // TODO: Put your code in here!
+    T intentos = 10000000;
+    T i = 0;
+    T medio = 0;
+    T y = 1;
+    T raiz = 1;
+    while((abs(y) > eps) && i < intentos ){
+      medio = (xl+xu)/2;
+      y = funct(medio);
+      if(y>0){
+        xu = medio;
+      }
+      else if(y<0){
+        xl = medio;
+      }
+      else{
+        raiz = medio;
+        return raiz;
+      }
+      i++;
+    }
+    if(intentos == i){
+        return std::numeric_limits<T>::quiet_NaN();
+    }
+    else{
+        raiz = medio;
+        return raiz;
+    }
 
-    // Return NaN if no root was found
-    return std::numeric_limits<T>::quiet_NaN();
   }
 
 }
