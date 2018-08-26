@@ -32,16 +32,51 @@ namespace anpi {
    * @throws anpi::Exception if inteval is reversed or both extremes
    *         have same sign.
    */
+
   template<typename T>
   T rootInterpolation(const std::function<T(T)>& funct,T xl,T xu,const T eps) {
 
-    // TODO: Put your code in here!
+    //interpolation
+    T error = std::abs((xu - xl) / xu);
+    T y_l = funct(xl);
+    T y_u = funct(xu);
+    T f_root;
+    T raiz = xu - ((y_u * (xl - xu)) / (y_l - y_u));
+    T raizProx = 0;
 
-    // Return NaN if no root was found
-    return std::numeric_limits<T>::quiet_NaN();
+
+    while (error > eps) {
+      y_l = funct(xl);
+      f_root = funct(raiz);
+
+      if (y_l * f_root < 0) {
+        xu = raiz;
+        raizProx  = xu - ((y_u * (xl - xu)) / (y_l - y_u));
+        error = std::abs((raizProx - raiz) / raizProx);
+        raiz = raizProx;
+      }
+      else if (y_l * f_root > 0) {
+        xl = raiz;
+        raizProx  = xu - ((y_u * (xl - xu)) / (y_l - y_u));
+        error = std::abs((raizProx - raiz) / raizProx);
+        raiz = raizProx;
+      }
+      else{
+        break;
+      }
+    }
+
+    //if y(raiz) is really different than 0, it did not find the root
+    if (abs(funct(raiz)) > 0.5) {
+      return std::numeric_limits<T>::quiet_NaN();
+    }
+    else {
+      return raiz;
+    }
   }
-
 }
+
+
   
 #endif
 
