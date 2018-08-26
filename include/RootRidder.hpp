@@ -36,29 +36,34 @@ namespace anpi {
         T fh = funct(xii);
         T xl = xi;
         T xh = xii;
+        T ea=T();
 
         for (int j = 0; j < maxit; ++j){
-            T xm = T(0.5) * ( xl + xh );
+            T xm = 0.5 * ( xl + xh );
             T fm = funct (xm);
             T s = sqrt( fm * fm -fl * fh);
 
-            T xnew = xm + (xm-xl)*((fl>=fh? T(1) : T(-1))*(fm/s));
-            if(std::abs(xnew-xm)/xm < eps){
+            T xnew = xm + (xm-xl)*( ( fl>=fh? T(1) : T(-1) ) * fm/s );
+            
+            if(xm!=T(0)) {
+                ea= std::abs((xnew-xm)/xm)*T(100);
+            }
+            if( ea < eps){
                 return xnew;
             }
             T fnew = funct(xnew);
             if (fnew == T(0)){
                 return xnew;
             }
-            if(fnew*fm < T(0)){
+            if( fnew*fm < T(0) ){
                 xl = xm;
                 fl = fm;
                 xh =xnew;
                 fh = fnew;
-            }else if(fl*fnew <T(0)){
+            }else if( fl*fnew  < T(0) ){
                 xh = xnew;
                 fh = fnew;
-            }else if(fh*fnew<T(0)){
+            }else if( fh*fnew < T(0) ){
                 xl =xnew;
                 fl =fnew;
             }
