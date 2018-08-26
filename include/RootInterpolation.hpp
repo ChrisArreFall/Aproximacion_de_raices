@@ -36,18 +36,18 @@ namespace anpi {
     template<typename T>
     T rootInterpolation(const std::function<T(T)> &funct, T xl, T xu, const T eps) {
 
-
-        int maxi = 10000;
-        T ea = T();
-        T xr = xl;
-        T fl = funct(xl);
-        T fu = funct(xu);
         if (xl > xu) {
             throw anpi::Exception("inverted interval");
         }
         if (funct(xl) * funct(xu) > T(0)) {
             throw anpi::Exception("unenclosed root");
         }
+        int maxi = 10000;
+        T ea = T();
+        T xr = xl;
+        T fl = funct(xl);
+        T fu = funct(xu);
+
         int iu(0), il(0);
         for (int i = 0; i < maxi; ++i) {
             T xrold(xr);

@@ -18,50 +18,57 @@
 #define ANPI_ROOT_BISECTION_HPP
 
 namespace anpi {
-  
-  /**
-   * Find the roots of the function funct looking for it in the
-   * interval [xl,xu], using the bisection method.
-   *
-   * @param funct a std::function of the form "T funct(T x)"
-   * @param xl lower interval limit
-   * @param xu upper interval limit
-   *
-   * @return root found, or NaN if none could be found.
-   *
-   * @throws anpi::Exception if inteval is reversed or both extremes
-   *         have same sign.
-   */
-  template<typename T>
-  T rootBisection(const std::function<T(T)>& funct,T xl,T xu,const T eps) {
 
-    //bisection
-    if (funct(xl) * funct(xu) >= 0)
-    {
-      return std::numeric_limits<T>::quiet_NaN();
+    /**
+     * Find the roots of the function funct looking for it in the
+     * interval [xl,xu], using the bisection method.
+     *
+     * @param funct a std::function of the form "T funct(T x)"
+     * @param xl lower interval limit
+     * @param xu upper interval limit
+     *
+     * @return root found, or NaN if none could be found.
+     *
+     * @throws anpi::Exception if inteval is reversed or both extremes
+     *         have same sign.
+     */
+    template<typename T>
+    T rootBisection(const std::function<T(T)> &funct, T xl, T xu, const T eps) {
+
+        if (xl > xu) {
+            throw anpi::Exception("inverted interval");
+        }
+        if (funct(xl) * funct(xu) > T(0)) {
+            throw anpi::Exception("unenclosed root");
+        }
+
+        int maxi = 10000;
+        T xr = xl;
+        T fl = funct(xl);
+        T ea = T();
+        for (int i = 0; i < maxi; ++i) {
+            T xrold(xr);
+            xr = (xl + xu) / T(2);
+            T fr = funct(xr);
+
+            if (std::abs(xr) > std::numeric_limits<T>::epsilon()) {
+                ea = std::abs((xrold - xr) / xr) * T(100);
+            }
+            T cond = fl * fr;
+            if (cond < T(0)) {
+                xu = xr;
+            } else if (cond > T(0)) {
+                xl = xr;
+                fl = fr;
+            } else {
+                ea = T(0);
+                xr = (std::abs(fl) < std::numeric_limits<T>::epsilon()) ? xl : xr;
+            }
+            if (ea < eps) return xr;
+        }
+        return std::numeric_limits<T>::quiet_NaN();
     }
-
-    T c = xl;
-    while ((xu-xl) >= eps)
-    {
-      // Find middle point
-      c = (xl+xu)/2;
-
-      // Check if middle point is root
-      if (funct(c) == 0.0)
-          break;
-
-          // Decide the side to repeat the steps
-      else if (funct(c)*funct(xl) < 0)
-          xu = c;
-      else
-          xl = c;
-    }
-    return c;
-
-  }
-
 }
-  
+
 #endif
 
