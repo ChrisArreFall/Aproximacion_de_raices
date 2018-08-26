@@ -1,0 +1,3 @@
+/Users/chris/Documents/TEC/Anpi/Tarea_2/Aproximacion_de_raices/test/build/CMakeFiles/rebuild_cache.dir
+/Users/chris/Documents/TEC/Anpi/Tarea_2/Aproximacion_de_raices/test/build/CMakeFiles/edit_cache.dir
+/Users/chris/Documents/TEC/Anpi/Tarea_2/Aproximacion_de_raices/test/build/CMakeFiles/tester.dir
