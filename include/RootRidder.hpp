@@ -44,7 +44,7 @@ namespace anpi {
             T s = sqrt( fm * fm -fl * fh);
 
             T xnew = xm + (xm-xl)*( ( fl>=fh? T(1) : T(-1) ) * fm/s );
-            
+
             if(xm!=T(0)) {
                 ea= std::abs((xnew-xm)/xm)*T(100);
             }
