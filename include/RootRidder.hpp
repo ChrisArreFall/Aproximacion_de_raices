@@ -18,10 +18,6 @@
 #define ANPI_ROOT_RIDDER_HPP
 
 namespace anpi {
-    template<class T>
-    inline T SIGN(const T &a, const T &b)
-    {return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);}
-
     /**
      * Find a root of the function funct looking for it starting at xi
      * by means of the secant method.
@@ -34,7 +30,6 @@ namespace anpi {
      */
     template<typename T>
     T rootRidder(const std::function<T(T)>& funct,T xi,T xii,const T eps) {
-
 
         auto maxit = std::numeric_limits<T>::digits;
         T fl = funct(xi);
@@ -71,7 +66,7 @@ namespace anpi {
         }
         return std::numeric_limits<T>::quiet_NaN();
 
-}
+    }
 
 }
 
