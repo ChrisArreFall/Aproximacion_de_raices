@@ -18,27 +18,62 @@
 #define ANPI_ROOT_RIDDER_HPP
 
 namespace anpi {
-  
-  /**
-   * Find a root of the function funct looking for it starting at xi
-   * by means of the secant method.
-   *
-   * @param funct a functor of the form "T funct(T x)"
-   * @param xi initial position
-   * @param xii second initial position 
-   *
-   * @return root found, or NaN if no root could be found
-   */
-  template<typename T>
-  T rootRidder(const std::function<T(T)>& funct,T xi,T xii,const T eps) {
+    template<class T>
+    inline T SIGN(const T &a, const T &b)
+    {return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);}
 
-    // TODO: Put your code in here!
-    
-    // Return NaN if no root was found
-    return std::numeric_limits<T>::quiet_NaN();
-  }
+    /**
+     * Find a root of the function funct looking for it starting at xi
+     * by means of the secant method.
+     *
+     * @param funct a functor of the form "T funct(T x)"
+     * @param xi initial position
+     * @param xii second initial position
+     *
+     * @return root found, or NaN if no root could be found
+     */
+    template<typename T>
+    T rootRidder(const std::function<T(T)>& funct,T xi,T xii,const T eps) {
+
+
+        auto maxit = std::numeric_limits<T>::digits;
+        T fl = funct(xi);
+        T fh = funct(xii);
+        T xl = xi;
+        T xh = xii;
+
+        for (int j = 0; j < maxit; ++j){
+            T xm = T(0.5) * ( xl + xh );
+            T fm = funct (xm);
+            T s = sqrt( fm * fm -fl * fh);
+
+            T xnew = xm + (xm-xl)*((fl>=fh? T(1) : T(-1))*(fm/s));
+            if(std::abs(xnew-xm)/xm < eps){
+                return xnew;
+            }
+            T fnew = funct(xnew);
+            if (fnew == T(0)){
+                return xnew;
+            }
+            if(fnew*fm < T(0)){
+                xl = xm;
+                fl = fm;
+                xh =xnew;
+                fh = fnew;
+            }else if(fl*fnew <T(0)){
+                xh = xnew;
+                fh = fnew;
+            }else if(fh*fnew<T(0)){
+                xl =xnew;
+                fl =fnew;
+            }
+
+        }
+        return std::numeric_limits<T>::quiet_NaN();
 
 }
-  
+
+}
+
 #endif
 
