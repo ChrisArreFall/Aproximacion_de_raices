@@ -11,7 +11,6 @@
 #include <cmath>
 #include <limits>
 #include <functional>
-
 #include "Exception.hpp"
 
 #ifndef ANPI_ROOT_INTERPOLATION_HPP
@@ -49,19 +48,23 @@ namespace anpi {
         T fu = funct(xu);
 
         int iu(0), il(0);
-        for (int i = 0; i < maxi; ++i) {
+        for (int i = maxi; i >=0; --i) {
             T xrold(xr);
             xr = xu - fu * (xl - xu) / (fl - fu);
             T fr = funct(xr);
             if (std::abs(xr) > std::numeric_limits<T>::epsilon()) {
                 ea = std::abs((xr - xrold) / xr) * T(100);
             }
+            if (ea < eps) {
+                return xr;
+            }
+
             T cond = fl * fr;
             if (cond < T(0)) {
                 xu = xr;
                 fu = fr;
                 iu = 0;
-                il++;
+                ++il;
                 if (il >= 2) {
                     fl /= T(2);
                 }
@@ -70,15 +73,14 @@ namespace anpi {
                 xl = xr;
                 fl = fr;
                 il = 0;
-                iu++;
+                ++iu;
                 if (iu >= 2) {
                     fu /= 2;
                 }
             } else {
-                ea = T(0);
-                xr = (fl == T(0)) ? xl : xu;
+                return xr;
             }
-            if (ea < eps) return xr;
+
         }
         return std::numeric_limits<T>::quiet_NaN();
 

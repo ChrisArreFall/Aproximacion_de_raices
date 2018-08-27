@@ -11,7 +11,6 @@
 #include <cmath>
 #include <limits>
 #include <functional>
-
 #include "Exception.hpp"
 
 #ifndef ANPI_ROOT_BISECTION_HPP

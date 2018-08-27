@@ -18,12 +18,11 @@
 #define ANPI_NEWTON_RAPHSON_HPP
 
 namespace anpi {
-    //newton
     template<typename T>
     T derivate(const std::function<T(T)>& funct, T xi) {
 
 
-      T h = T(.01);
+      T h = T(.001);
       T fp = (funct(xi + h) - funct(xi - h)) / (T(2)*h) ; //diferencias centradas
       return fp;
     }
@@ -43,26 +42,24 @@ namespace anpi {
     template<typename T>
     T rootNewtonRaphson(const std::function<T(T)>& funct,T xi,const T eps) {
 
-      T x2 = T();
+      T x2;
       T ea =T();
-
       int maxi=10000;
-      for (int i  = 0; i< maxi; ++i){
-        x2 = xi - funct(xi)/derivate(funct, xi);
-        if(x2 != T(0)) {
-          ea = std::abs((x2 - xi) / x2) * T(100);
-        }else{
-          ea = std::abs(x2-xi);
-        }
-        if(ea < eps){
-          if(funct(x2)<=std::numeric_limits<T>::epsilon()){
-            return x2;
+      for (int i  = 0; i< maxi; ++i) {
+          x2 = xi - funct(xi) /derivate(funct,xi); //calculate next x
+
+          if (std::abs(x2)  !=T(0)) { //check division for 0
+              ea = std::abs((x2-xi)/x2);
           }
-        }
-        xi = x2;
+
+          if (funct(x2) == T(0) || (std::abs(ea) < eps) ) return x2; //check if precision is reached
+
+          xi = x2;
       }
 
-      return std::numeric_limits<T>::quiet_NaN();
+        // Return NaN if no root was found
+        return std::numeric_limits<T>::quiet_NaN();
+
     }
 
 }
