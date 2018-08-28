@@ -31,7 +31,7 @@ namespace anpi {
     template<typename T>
     T rootRidder(const std::function<T(T)>& funct,T xi,T xii,const T eps) {
 
-        auto maxit = std::numeric_limits<T>::digits;
+        auto maxit = std::numeric_limits<T>::digits; // maximum number of iterations
         T fl = funct(xi);
         T fh = funct(xii);
         T xl = xi;
@@ -39,22 +39,23 @@ namespace anpi {
         T ea=T();
 
         for (int j = 0; j < maxit; ++j){
-            T xm = 0.5 * ( xl + xh );
-            T fm = funct (xm);
+            T xm = 0.5 * ( xl + xh ); //calculate the middle point
+            T fm = funct (xm); //calculate the value of the function at that point
             T s = sqrt( fm * fm -fl * fh);
 
-            T xnew = xm + (xm-xl)*( ( fl>=fh? T(1) : T(-1) ) * fm/s );
+            T xnew = xm + (xm-xl)*( ( fl>=fh? T(1) : T(-1) ) * fm/s ); //calculate the new x
 
-            if(xm!=T(0)) {
+            if(xm!=T(0)) {//check to avoid division for 0
                 ea= std::abs((xnew-xm)/xm)*T(100);
             }
-            if( ea < eps){
+            if( ea < eps){// if precision reached, return
                 return xnew;
             }
             T fnew = funct(xnew);
             if (fnew == T(0)){
                 return xnew;
             }
+            //we check for the correct side
             if( fnew*fm < T(0) ){
                 xl = xm;
                 fl = fm;
@@ -69,6 +70,7 @@ namespace anpi {
             }
 
         }
+        // Return NaN if no root was found
         return std::numeric_limits<T>::quiet_NaN();
 
     }

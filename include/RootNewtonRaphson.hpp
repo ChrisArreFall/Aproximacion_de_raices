@@ -18,8 +18,15 @@
 #define ANPI_NEWTON_RAPHSON_HPP
 
 namespace anpi {
+    /**
+     * Calculate the derivative of the function by means of centered differences
+     * @tparam T
+     * @param funct function to be derived
+     * @param xi location to find the derivative
+     * @return the derivative at xi
+     */
     template<typename T>
-    T derivate(const std::function<T(T)>& funct, T xi) {
+    T derivative(const std::function<T(T)> &funct, T xi) {
 
 
       T h = T(.001);
@@ -46,7 +53,7 @@ namespace anpi {
       T ea =T();
       int maxi=10000;
       for (int i  = 0; i< maxi; ++i) {
-          x2 = xi - funct(xi) /derivate(funct,xi); //calculate next x
+          x2 = xi - funct(xi) / derivative(funct, xi); //calculate next x
 
           if (std::abs(x2)  !=T(0)) { //check division for 0
               ea = std::abs((x2-xi)/x2);
